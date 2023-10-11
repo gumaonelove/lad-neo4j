@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from config import uri, user, password
 from models.relation_model import RelationModel
@@ -20,22 +20,27 @@ if __name__ == '__main__':
         relation_service = RelationService(session)
 
         # Задание 1
+        print('Задание 1')
         # В системе необходимо создать календарь, с узлами, которые содержат информацию о дате и о том,
         # является ли этот день рабочим. Используем производственный календарь текущего года.
-        start_date = datetime(2023, 1, 1)
-        end_date = datetime(2023, 12, 31)
-        calendar_service.create_calendar(start_date, end_date)
+        calendar_service.create_calendar(
+            start_date=date(2023, 1, 1),
+            end_date=date(2023, 12, 31)
+        )
 
         # Задание 2
+        print('\nЗадание 2')
         # Необходимо создать группу “Группа 1” и сохранить ее в БД в виде узла графа (используем python и cypher).
         group_service.create_group(name="Группа 1")
 
         # Задание 3
+        print('\nЗадание 3')
         # Необходимо создать подгруппу “Подгруппа 1.1” и
         # сохранить ее в БД в виде узла графа с указанием связи с группой 1.
         group_service.create_subgroup(parent_group="Группа 1", subgroup_name="Подгруппа 1.1")
 
         # Задание 4
+        print('\nЗадание 4')
         # Необходимо создать работу “Работа 1.1.1”, которая начинается 1.08.23, заканчивается 10.08.23
         # и имеет длительность 8 рабочих дней. в виде узла графа с указанием связи с подгруппой 1.1.
         # После создания работы сроки начала и завершения группы и подгруппы должны пересчитаться и
@@ -45,13 +50,14 @@ if __name__ == '__main__':
             work_name='Работа 1.1.1',
             calculation_type="WorkingDays",
             duration_working_days=8,
-            start_date="2023-08-01",
+            start_date=date(2023, 8, 1),
             group='1',
             subgroup='1.1'
         )
         work_service.create_work(work_1_1_1, calendar_service)
 
         # Задание 5
+        print('\nЗадание 5')
         # Необходимо создать работу “Работа 1.1.2”, которая начинается 5.08.23, заканчивается 14.08.23 и
         # имеет длительность 10 календарных дней. в виде узла графа с указанием связи с подгруппой 1.1.
         # После создания работы сроки начала и завершения группы и подгруппы должны пересчитаться и
@@ -61,12 +67,14 @@ if __name__ == '__main__':
             work_name='Работа 1.1.2',
             calculation_type="CalendarDays",
             duration_calendar_days=10,
-            start_date="2023-08-05",
+            start_date=date(2023, 8, 5),
             group='1',
             subgroup='1.1'
         )
+        work_service.create_work(work_1_1_2, calendar_service)
 
         # Задание 6
+        print('\nЗадание 6')
         # Необходимо создать работу 1.2, входящую в группу 1, но не в подгруппу 1.1
         # Указать ей длительность 3 рабочих дня.
         # Создать связи от работ 1.1.1 и 1.1.2 типа Окончание-Начало, у связи от работы 1.1.2 будет смещение старта
@@ -79,10 +87,12 @@ if __name__ == '__main__':
             work_name='Работа 1.2',
             calculation_type="WorkingDays",
             duration_working_days=3,
-            start_date='20.08.23',
+            start_date=date(2023, 8, 23),
             group='1',
+            subgroup='1.0'
         )
-        work_service.create_work(work_1_2, calendar_service)  # Создание работы 1.2 в базе данных
+        work_service.create_work(work_1_2, calendar_service)
+
         # Создание связи "Окончание-Начало" от работы 1.1.1 к работе 1.2
         relation_1_1_1_to_1_2 = RelationModel(
             start_work_id=1,

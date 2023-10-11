@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 
 class WorkModel:
@@ -7,7 +8,7 @@ class WorkModel:
             work_id: int,
             work_name: str,
             calculation_type: str,
-            start_date: str,
+            start_date: datetime.date,
             group: str,
             duration_hours: Optional[int] = None,
             duration_working_days: Optional[int] = None,
@@ -21,11 +22,12 @@ class WorkModel:
         self.duration_working_days = duration_working_days
         self.duration_calendar_days = duration_calendar_days
         self.start_date = start_date
-        self.end_date = ''
+        self.end_date: Optional[datetime.date] = None
         self.subgroup = subgroup
         self.group = group
 
     def __repr__(self):
-        return f"Work(Id: {self.work_id}, CalculationType: {self.calculation_type}, " \
-               f"DurationHours: {self.duration_hours}, DurationWorkingDays: {self.duration_working_days}, " \
-               f"DurationCalendarDays: {self.duration_calendar_days}, StartDate: {self.start_date}, EndDate: {self.end_date})"
+        return f"""
+            Work(Id: {self.work_id}, 
+            Name: {self.work_name})
+        """
