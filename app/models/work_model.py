@@ -8,9 +8,11 @@ class WorkModel:
             work_name: str,
             calculation_type: str,
             start_date: str,
+            group: str,
             duration_hours: Optional[int] = None,
             duration_working_days: Optional[int] = None,
             duration_calendar_days: Optional[int] = None,
+            subgroup: Optional[str] = None,
     ):
         self.work_id = work_id
         self.work_name = work_name
@@ -20,6 +22,8 @@ class WorkModel:
         self.duration_calendar_days = duration_calendar_days
         self.start_date = start_date
         self.end_date = ''
+        self.subgroup = subgroup
+        self.group = group
 
     def __repr__(self):
         return f"Work(Id: {self.work_id}, CalculationType: {self.calculation_type}, " \

@@ -4,9 +4,11 @@ from datetime import datetime, timedelta
 
 
 class CalendarService(Service):
-    '''Класс CalendarGraph служит для работы с графом календаря в базе данных Neo4j.
+    '''
+    Класс CalendarGraph служит для работы с графом календаря в базе данных Neo4j.
     Он содержит логику для добавления  связей (ребер) между узлами (днями) в графе,
-    представляя таким образом рабочие дни и их отношения. '''
+    представляя таким образом рабочие дни и их отношения
+    '''
 
     def _check_if_date_exists(self, date: str) -> bool:
         '''Проверка, существует ли уже узел с такой датой в графе'''
@@ -23,12 +25,17 @@ class CalendarService(Service):
 
     def _create_calendar_node(self, date: str, is_working_day: bool) -> None:
         '''Метод create_calendar создает календарь в базе данных Neo4j.'''
-        # Создание календаря на основе производственного календаря текущего года
-        # Здесь можно реализовать логику создания календаря, например, добавление узлов для каждого рабочего и
-        # нерабочего дня в текущем году
-        # Пример:
         query = "CREATE (c:Calendar {date: $date, is_working_day: $is_working_day})"
         self.session.run(query, date=date, is_working_day=is_working_day)
+
+    def is_working_day(self, date):
+        query = "MATCH (d:Day {date: $date}) RETURN d.isWorkingDay as isWorkingDay"
+        result = self.session.run(query, date=date)
+        if result.single() is not None:
+            return result.single()["isWorkingDay"]
+        else:
+            # Если дата не найдена в базе данных, по умолчанию считаем ее нерабочим днем
+            return False
 
     def create_calendar(self, start_date: datetime.date, end_date: datetime.date) -> None:
         current_date = start_date

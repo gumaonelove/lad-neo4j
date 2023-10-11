@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from config import uri, user, password
 from models.relation_model import RelationModel
 from models.work_model import WorkModel
@@ -6,9 +8,6 @@ from services.calendar_service import CalendarService
 from services.group_service import GroupService
 from services.relation_service import RelationService
 from services.work_service import WorkService
-
-from datetime import datetime
-
 
 if __name__ == '__main__':
     # Пример использования
@@ -47,11 +46,10 @@ if __name__ == '__main__':
             calculation_type="WorkingDays",
             duration_working_days=8,
             start_date="2023-08-01",
-            # end_date="2023-08-10"
+            group='1',
+            subgroup='1.1'
         )
-        work_service.create_work(work_1_1_1)
-        work_service.update_subgroup_query('1.1', "2023-08-01", "2023-08-10")
-        work_service.update_group_query('1', "2023-08-01", "2023-08-10")
+        work_service.create_work(work_1_1_1, calendar_service)
 
         # Задание 5
         # Необходимо создать работу “Работа 1.1.2”, которая начинается 5.08.23, заканчивается 14.08.23 и
@@ -64,7 +62,8 @@ if __name__ == '__main__':
             calculation_type="CalendarDays",
             duration_calendar_days=10,
             start_date="2023-08-05",
-            # end_date="2023-08-14"
+            group='1',
+            subgroup='1.1'
         )
 
         # Задание 6
@@ -81,9 +80,9 @@ if __name__ == '__main__':
             calculation_type="WorkingDays",
             duration_working_days=3,
             start_date='20.08.23',
-            # '24.08.23'
+            group='1',
         )
-        work_service.create_work(work_1_2)  # Создание работы 1.2 в базе данных
+        work_service.create_work(work_1_2, calendar_service)  # Создание работы 1.2 в базе данных
         # Создание связи "Окончание-Начало" от работы 1.1.1 к работе 1.2
         relation_1_1_1_to_1_2 = RelationModel(
             start_work_id=1,
@@ -104,11 +103,5 @@ if __name__ == '__main__':
         # Создание связей в базе данных
         relation_service.create_relation(relation_1_1_1_to_1_2)
         relation_service.create_relation(relation_1_1_2_to_1_2)
-
-        # Обновление дат начала и окончания работы 1.2 (с учетом смещения)
-        work_service.update_work_query(3, '20.08.23', '24.08.23')
-
-        # Обновление дат начала и окончания группы 1 (с учетом новой работы 1.2)
-        work_service.update_group_query('1', "2023-08-01", "2023-08-24")
 
         print("Выполнение программы завершено")

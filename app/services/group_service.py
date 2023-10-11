@@ -12,12 +12,21 @@ class GroupService(Service):
         if not self._check_if_group_exists(name):
             query = "CREATE (g:Group {name: $name})"
             self.session.run(query, name=name)
+            print(f'Группа {name} успешно создана')
+        else:
+            print(f'Группа {name} уже существует')
 
     def create_subgroup(self, parent_group: str, subgroup_name: str) -> None:
-        if (not self._check_if_group_exists(parent_group)
-                and not self._check_if_group_exists(subgroup_name)):
-            query = '''
-            MATCH (g:Group {name: $parent_group})
-            CREATE (g)-[:HAS_SUBGROUP]->(sg:Subgroup {name: $subgroup_name})
-            '''
-            self.session.run(query, parent_group=parent_group, subgroup_name=subgroup_name)
+        if not self._check_if_group_exists(parent_group):
+            if not self._check_if_group_exists(subgroup_name):
+                query = '''
+                MATCH (g:Group {name: $parent_group})
+                CREATE (g)-[:HAS_SUBGROUP]->(sg:Subgroup {name: $subgroup_name})
+                '''
+                self.session.run(query, parent_group=parent_group, subgroup_name=subgroup_name)
+            else:
+                print(f'Под-группа {subgroup_name} успешно создана')
+        else:
+            print(f'Группа {parent_group} уже существует')
+
+
